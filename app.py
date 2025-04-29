@@ -6,9 +6,9 @@ app = Flask(__name__)
 # Connect to your database
 db = mysql.connector.connect(
     host="localhost",
-    user="your_db_username",
-    password="your_db_password",
-    database="JJMTTrailDB"
+    user="root",
+    password="password1!",
+    database="jjmtdb"
 )
 cursor = db.cursor(dictionary=True)
 
@@ -21,12 +21,14 @@ def home():
 @app.route('/submit', methods=['POST'])
 def submit_report():
     data = request.get_json()
+    park = data['park']
     trail = data['trail']
-    issue_type = data['issue_type']
+    category = data['category']
+    submitername = data['submitername']
     description = data['description']
 
-    query = "INSERT INTO trail_reports (trail_name, issue_type, description) VALUES (%s, %s, %s)"
-    cursor.execute(query, (trail, issue_type, description))
+    query = "INSERT INTO trail_reports (park, trail, category, submitername, description) VALUES (%s, %s, %s, %s, %s)"
+    cursor.execute(query, (park, trail, category, submitername, description))
     db.commit()
     return jsonify({'message': 'Report submitted successfully'})
 
