@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>County Trails Enhancement</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+  </head>
+  <body>
+    <header>
+      <h1>County Trails Enhancement</h1>
+      <nav>
+        <ul>
+          <li><a href="#submit">Submit Report</a></li>
+          <li><a href="#view">View Reports</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Submit Report Section -->
+      <section id="submit">
+        <h2>Submit a Trail Report</h2>
+        <form
+          action="/submit_report"
+          method="POST"
+          enctype="multipart/form-data"
+        >
+          <label for="park">Select Park:</label>
+          <select id="park" name="park" required>
+            <option value="">--Choose a Park--</option>
+            <option value="oregon">Oregon Ridge</option>
+            <option value="cromwell">Cromwell Valley</option>
+            <option value="marshy">Marshy Point</option>
+            <option value="roland">Lake Roland</option>
+            <option value="gwy">Gwynns Falls</option>
+          </select>
+
+          <label for="trail">Trail Name:</label>
+	  <select id="trail" name="trail" required>
+          <option value="">--Select a Trail--</option>
+	  </select>
+
+          <label for="category">Category:</label>
+          <select id="category" name="category">
+            <option value="erosion">Erosion</option>
+            <option value="obstruction">Obstruction</option>
+            <option value="wildlife">Wildlife</option>
+            <option value="other">Other</option>
+          </select>
+
+          <label for="description">Description:</label>
+          <textarea
+            id="description"
+            name="description"
+            rows="10"
+            required
+          ></textarea>
+
+          <label for="photo">Upload Photo:</label>
+          <input type="file" id="photo" name="photo" accept="image/*" />
+
+          <button type="submit">Submit Report</button>
+        </form>
+      </section>
+
+      <!-- View Reports Section -->
+    <section id="view">
+  <h2>Recent Trail Reports</h2>
+  <div id="report-list">
+    {% if incidents %}
+      {% for incident in incidents %}
+      <article class="report">
+        <h3>{{ incident.ParkName }} – {{ incident.TrailName }}</h3>
+        <p>Category: {{ incident.Category }}</p>
+        <p>Date Reported: {{ incident.Date }}</p>
+        <p>Description: {{ incident.Description }}</p>
+      </article>
+      {% endfor %}
+    {% else %}
+      <p>No recent reports found.</p>
+    {% endif %}
+  </div>
+</section>
+
+    <!-- About Section -->
+      <section id="about">
+        <h2>About This Project</h2>
+        <p>
+            County Trail Enhancement is a web-based application developed to support both park patrons and staff in Baltimore County.
+          The system enables users to report trail conditions, maintenance issues, and environmental observations directly from their
+          devices, helping to improve the quality and safety of local park trails. By creating a direct line of communication between
+          the public and park management, this tool makes it easier to track, prioritize, and respond to trail-related concerns in real
+          time. The project is driven by a commitment to sustainability, accessibility, and community engagement in the care of Baltimore
+          County's natural spaces.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Baltimore County Parks. All rights reserved.</p>
+    </footer>
+	 <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log("Script is loaded and running ✅");
+    
+        const trailsByPark = {
+          oregon: ["Lake Trail", "Beech Loop", "Ridge Walk"],
+          cromwell: ["Willow Loop", "Meadow Path"],
+          marshy: ["Otter Point", "Eagle Nest"],
+          roland: ["Boardwalk Loop", "Streamside Trail"],
+          gwy: ["Mill Run", "Stream Valley", "Urban Wilds"]
+        };
+    
+        const parkSelect = document.getElementById("park");
+        const trailSelect = document.getElementById("trail");
+    
+        if (!parkSelect || !trailSelect) {
+          console.log("❌ One or both dropdowns not found");
+          return;
+        }
+    
+        parkSelect.addEventListener("change", () => {
+          const selectedPark = parkSelect.value;
+          const trails = trailsByPark[selectedPark] || [];
+    
+          trailSelect.innerHTML = '<option value="">--Select a Trail--</option>';
+          trails.forEach(trail => {
+            const option = document.createElement("option");
+            option.value = trail;
+            option.textContent = trail;
+            trailSelect.appendChild(option);
+          });
+        });
+      });
+    </script> 
+  </body>
+</html>
