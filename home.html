@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Park Trail Report Submission</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <header>
+        <h1>Park Trail Reporting System</h1>
+    </header>
+
+    <main>
+        <h2>Submit a Trail Report</h2>
+        <form id="reportForm" onsubmit="event.preventDefault(); submitReport();">
+            <label for="trail">Trail Name:</label><br>
+            <input type="text" id="trail" name="trail" required><br><br>
+
+            <label for="issue_type">Issue Type:</label><br>
+            <input type="text" id="issue_type" name="issue_type" required><br><br>
+
+            <label for="description">Description:</label><br>
+            <textarea id="description" name="description" rows="5" required></textarea><br><br>
+
+            <button type="submit">Submit Report</button>
+        </form>
+    </main>
+
+    <script>
+        function submitReport() {
+            const trail = document.getElementById('trail').value;
+            const issue_type = document.getElementById('issue_type').value;
+            const description = document.getElementById('description').value;
+
+            fetch('/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    trail: trail,
+                    issue_type: issue_type,
+                    description: description
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Report submitted successfully!');
+                // Clear the form
+                document.getElementById('reportForm').reset();
+            })
+            .catch((error) => {
+                console.error('Error submitting report:', error);
+                alert('Error submitting report. Please try again.');
+            });
+        }
+    </script>
+</body>
+</html>
