@@ -28,6 +28,9 @@ class Incident(db.Model):
     StaffAssign = db.Column(db.String(45))
     Priority = db.Column(db.String(45))
 
+with app.app_context():
+    db.create_all()
+
 @app.route('/')
 def home():
     incidents = Incident.query.order_by(Incident.incidentNum.desc()).limit(10).all()
