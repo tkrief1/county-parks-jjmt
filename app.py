@@ -1,16 +1,21 @@
 from flask import Flask, render_template, request, jsonify
 import mysql.connector
 
-app = Flask(__name__)
-
-# Connect to your database
-db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="password1!",
-    database="jjmtdb"
-)
-cursor = db.cursor(dictionary=True)
+try:
+    db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="password1!",
+        database="jjmtdb"
+    )
+    print("Connection successful!")
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM trail_reports;")
+    result = cursor.fetchall()
+    for row in result:
+        print(row)
+except mysql.connector.Error as err:
+    print(f"Error: {err}")
 
 # Home page
 @app.route('/')
