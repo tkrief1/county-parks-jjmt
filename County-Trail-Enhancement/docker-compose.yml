@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  parks-db:
+    image: mysql:8
+    container_name: parks-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password!!
+      MYSQL_DATABASE: county_parks
+      MYSQL_USER: parks_auth
+      MYSQL_PASSWORD: oregon-ridge
+    volumes:
+      - parks_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - park_network
+
+  parks-app:
+    build: .
+    container_name: county-parks
+    restart: always
+    ports:
+      - "5001:5000"  # external 5001 -> internal Flask 5000
+    environment:
+      - DATABASE_HOST=parks-db
+      - DATABASE_USER=parks_auth
+      - DATABASE_PASSWORD=oregon-ridge
+      - DATABASE_NAME=county_parks
+    depends_on:
+      - parks-db
+    networks:
+      - park_network
+
+volumes:
+  parks_data:
+
+networks:
+  park_network:
+    driver: bridge
