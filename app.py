@@ -1,6 +1,10 @@
 from flask import Flask, render_template, request, jsonify
 import mysql.connector
 
+# Initialize the Flask app
+app = Flask(__name__)
+
+# Connect to MySQL database
 try:
     db = mysql.connector.connect(
         host="localhost",
@@ -44,5 +48,6 @@ def get_reports():
     reports = cursor.fetchall()
     return jsonify(reports)
 
+# Run the app
 if __name__ == '__main__':
     app.run(debug=True)
