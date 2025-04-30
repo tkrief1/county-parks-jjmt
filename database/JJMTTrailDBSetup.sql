@@ -39,7 +39,7 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
-INSERT INTO `jjmtdb`.`Incidents` (`incidentNum`, `ParkName`, `TrailName`, `Date`, `Category`, `Description`, `Status`, `Priority`)
+INSERT IGNORE INTO `jjmtdb`.`Incidents` (`incidentNum`, `ParkName`, `TrailName`, `Date`, `Category`, `Description`, `Status`, `Priority`)
  VALUES ('001', 'Cromwell Valley', 'Lime Kiln', '2025-01-22', 'Erosion', 'Half of the trail is washed into the stream mear the beaver dam', 'New', 'New');
-INSERT INTO `jjmtdb`.`Incidents` (`incidentNum`, `ParkName`, `TrailName`, `Date`, `Category`, `Description`, `Status`, `Priority`)
+INSERT IGNORE INTO `jjmtdb`.`Incidents` (`incidentNum`, `ParkName`, `TrailName`, `Date`, `Category`, `Description`, `Status`, `Priority`)
  VALUES ('002', 'Marshy Point', 'White Tail', '2025-03-15', 'Obstruction', 'Fallen Tree', 'New', 'New');
