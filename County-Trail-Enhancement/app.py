@@ -20,13 +20,16 @@ class Incident(db.Model):
     incidentNum = db.Column(db. Integer, primary_key=True)
     ParkName = db.Column(db.String(45))
     TrailName = db.Column(db.String(45))
-    Date = db.Column(db.String(45))
+    SubmiterName = db.Column(db.String(45))
+    Contact = db.Column(db.String(45))
+    Date = db.Column(db.DateTime(6))
     Category = db.Column(db.String(45))
     Description = db.Column(db.String(1000))
     PhotoURL = db.Column(db.String(45))
     Status = db.Column(db.String(45))
     StaffAssign = db.Column(db.String(45))
     Priority = db.Column(db.String(45))
+    
 
 with app.app_context():
     db.create_all()
@@ -49,3 +52,5 @@ def admin():
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
+
+
