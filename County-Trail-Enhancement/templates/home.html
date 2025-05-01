@@ -19,9 +19,14 @@
     </header>
 
     <main>
+      <h2>This form is not a substitute for emergency services. If you are in need of emergency services, please contact 911.</h2>
+
+      <h2>While submitting this report, please be aware of your surroundings. Ensure you are in a safe location before submitting your report.</h2>
+
       <!-- Submit Report Section -->
       <section id="submit">
         <h2>Submit a Trail Report</h2>
+
         <form
           action="/submit_report"
           method="POST"
@@ -34,13 +39,20 @@
             <option value="cromwell">Cromwell Valley</option>
             <option value="marshy">Marshy Point</option>
             <option value="roland">Lake Roland</option>
-            <option value="gwy">Gwynns Falls</option>
+            <option value="banneker">Benjamin Banneker</option>
           </select>
 
           <label for="trail">Trail Name:</label>
 	  <select id="trail" name="trail" required>
           <option value="">--Select a Trail--</option>
 	  </select>
+
+    <label for="submiter">Your Name:</label>
+    <input type="text" id="submiter" name="submiter" required />
+      
+
+    <label for="contact">Contact Info:</label>
+    <input type="text" id="contact" name="contact" required />
 
           <label for="category">Category:</label>
           <select id="category" name="category">
@@ -106,11 +118,11 @@
         console.log("Script is loaded and running ✅");
     
         const trailsByPark = {
-          oregon: ["Lake Trail", "Beech Loop", "Ridge Walk"],
-          cromwell: ["Willow Loop", "Meadow Path"],
-          marshy: ["Otter Point", "Eagle Nest"],
-          roland: ["Boardwalk Loop", "Streamside Trail"],
-          gwy: ["Mill Run", "Stream Valley", "Urban Wilds"]
+          oregon: ["Baltimore Gneiss Trail", "Lake Trail", "Laurel Trail", "Lock Raven Schist Trail", "Loggers Trail", "Marble Quary Trail", "Miners Trail", "Ridge Trail", "S. James Campbell and Ivy Hill Trail", "Short Cut", "Virginia Pine"],
+          cromwell: ["Barrans-Baldwin Trail", "Lime Kiln Trail", "Loch Raven Drive Trail", "Meadow Trail", "Minebank Run Trail", "Sherwood Farm Trail", "Wellington Woods Trail", "Willow Grove Trail", "Birders Path", "Chat Path", "Eck Path", "Greenhouse Path", "Sycamore Path"],
+          marshy: ["Dundee-Saltpeter Trail", "Weiskittel Trail", "Katie and Wil’s Trail", "White Tail Trail", "Cassandor Hamilton Trail", "Greenway Trail", "Vernal Pond Trail", "Brinkmans Trail", "Bluebird Loop Trail", "Skunk Cabbage Loop Trail"],
+          roland: ["Red Trail", "Blue Trail", "Purple Trail", "Paved Loop Path", "Boardwalk to Lightrail", "Yellow Trail", "Orange Trail", "Green Trail", "White Trail", "Kingfisher Wetland Trail", "Pink Trail"],
+          banneker: ["Number 9 Trolley Line Trail", "Story Trail", "Yellow Trail", "White Trail", "Green Trail", "Red Trail", "Blue Trail"]
         };
     
         const parkSelect = document.getElementById("park");
