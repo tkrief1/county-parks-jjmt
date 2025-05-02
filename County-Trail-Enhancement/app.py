@@ -65,7 +65,7 @@ def submit_report():
         priority = request.form.get('priority', 'Medium')
 
         # Handle optional file upload
-        photo = request.files.get['photo']
+        photo = request.files.get('photo')
         photo_url = ''
         if photo and photo.filename != '': # and allowed_file(photo.filename):
             ext = photo.filename.rsplit('.', 1)[1].lower()
