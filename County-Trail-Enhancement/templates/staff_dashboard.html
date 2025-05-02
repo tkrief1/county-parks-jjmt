@@ -1,99 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Staff Dashboard - County Trails Enhancement</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='style.css') }}"
-    />
-  </head>
-  <body>
-    <header>
-      <h1>County Trails Enhancement - Staff Dashboard</h1>
-      <nav>
-        <ul>
-          <li><a href="#overview">Overview</a></li>
-          <li><a href="#assign">Assign Tasks</a></li>
-          <li><a href="#analytics">Analytics</a></li>
-          <li><a href="#">Logout</a></li>
-        </ul>
-      </nav>
-    </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Staff Dashboard - County Trails Enhancement</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <style>
+    .report-summary {
+      cursor: pointer;
+      padding: 1rem;
+      background-color: #f5f5f5;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+    }
 
-    <main>
-      <div class="staff_dashboard">
-        <!-- SECTION: Report Overview (Replace with backend loop) -->
-        <section id="overview">
-          <h2>Recent Trail Reports</h2>
-          <div id="report-list" class="scrollable-list">
-            <!-- HARD-CODED EXAMPLE: Replace with loop -->
-            <article class="report">
-              <h3>Trail B – Erosion</h3>
-              <p>Reported: April 14, 2025</p>
-              <p>Status: Open</p>
-              <p>Description: Washout at bridge crossing near mile 1.8.</p>
-            </article>
+    .report-details {
+      display: none;
+      padding: 1.5rem;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      margin-bottom: 1.5rem;
+    }
 
-            <article class="report">
-              <h3>Trail C – Obstruction</h3>
-              <p>Reported: April 12, 2025</p>
-              <p>Status: In Progress</p>
-              <p>Description: Fallen tree blocking trail path.</p>
-              <img
-                src="static/example_photo.jpg"
-                alt="Fallen tree image"
-                style="max-width: 300px; margin-top: 0.5rem"
-              />
-            </article>
+    .report-photo {
+      max-width: 100%;
+      margin-top: 0.5rem;
+      border-radius: 4px;
+    }
+
+    .assign-inline-form {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .assign-inline-form label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+
+    .assign-inline-form select,
+    .assign-inline-form button {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: 1px solid #bbb;
+    }
+
+    .assign-inline-form button {
+      background-color: #2F5233;
+      color: white;
+      font-weight: bold;
+      margin-top: 1.25rem;
+      border: none;
+      transition: background 0.3s ease;
+    }
+
+    .assign-inline-form button:hover {
+      background-color: #1E3D2F;
+    }
+
+    .report-info p {
+      margin: 0.25rem 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>County Trails Enhancement - Staff Dashboard</h1>
+    <nav>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#analytics">Analytics</a></li>
+        <li><a href="#">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Overview Section -->
+    <section id="overview">
+      <h2>Recent Trail Reports</h2>
+      <div class="report-list">
+        {% for incident in incidents %}
+        <div class="report">
+          <div class="report-summary" onclick="toggleDetails(this)">
+            <span>{{ incident.ParkName|title }} – {{ incident.TrailName }}</span>
+            <span style="font-weight: normal; font-size: 0.9rem; color: #555;">Click to expand</span>
           </div>
-        </section>
+          <div class="report-details">
+            <div class="report-info">
+              <p><strong>Submitter:</strong> {{ incident.SubmiterName }}</p>
+              <p><strong>Contact:</strong> {{ incident.Contact }}</p>
+              <p><strong>Category:</strong> {{ incident.Category }}</p>
+              <p><strong>Reported:</strong> {{ incident.Date.strftime('%B %d, %Y') if incident.Date else 'Unknown' }}</p>
+              <p><strong>Status:</strong> {{ incident.Status or 'Not Set' }}</p>
+              <p><strong>Priority:</strong> {{ incident.Priority or 'Unassigned' }}</p>
+              <p><strong>Assigned Staff:</strong> {{ incident.StaffAssign or 'None' }}</p>
+              <p><strong>Description:</strong> {{ incident.Description }}</p>
+              {% if incident.PhotoURL %}
+              <img src="{{ incident.PhotoURL }}" alt="Report Photo" class="report-photo" />
+              {% endif %}
+            </div>
 
-        <!-- SECTION: Task Assignment (Replace select fields with backend options) -->
-        <section id="assign">
-          <h2>Assign a Task</h2>
-          <form action="#" method="POST">
-            <label for="report_id">Select Report:</label>
-            <select id="report_id" name="report_id">
-              <!-- HARD-CODED OPTIONS: Replace with report dropdown from backend -->
-              <option value="1">Trail B – Erosion</option>
-              <option value="2">Trail C – Obstruction</option>
-            </select>
+            <form class="assign-inline-form" action="/assign_report/{{ incident.incidentNum }}" method="POST">
+              <label for="staff_member_{{ incident.incidentNum }}">Assign to Staff:</label>
+              <select id="staff_member_{{ incident.incidentNum }}" name="staff_member">
+                <option value="ranger_jane">ranger_jane</option>
+                <option value="ranger_mike">ranger_mike</option>
+              </select>
 
-            <label for="staff_member">Assign to Staff:</label>
-            <select id="staff_member" name="staff_member">
-              <!-- HARD-CODED OPTIONS: Replace with user list from backend -->
-              <option value="10">ranger_jane</option>
-              <option value="11">ranger_mike</option>
-            </select>
+              <label for="priority_{{ incident.incidentNum }}">Set Priority:</label>
+              <select id="priority_{{ incident.incidentNum }}" name="priority">
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+              </select>
 
-            <label for="priority">Priority:</label>
-            <select id="priority" name="priority">
-              <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
-              <option value="High">High</option>
-            </select>
-
-            <button type="submit">Assign Task</button>
-          </form>
-        </section>
+              <button type="submit">Assign Task</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
       </div>
-      <!-- SECTION: Analytics (Replace values with dynamic counts) -->
-      <section id="analytics">
-        <h2>Trail Activity Summary</h2>
-        <ul>
-          <!-- HARD-CODED STATS: Replace with dynamic data -->
-          <li>Total Reports: 42</li>
-          <li>Open Issues: 16</li>
-          <li>Most Reported Trail: Trail B</li>
-          <li>Top Issue Type: Obstruction</li>
-        </ul>
-      </section>
-    </main>
+    </section>
 
-    <footer>
-      <p>&copy; 2025 Baltimore County Parks • Staff Access Only</p>
-    </footer>
-  </body>
+    <!-- Analytics Section -->
+    <section id="analytics">
+      <h2>Trail Activity Summary</h2>
+      <ul>
+        <li><strong>Total Reports:</strong> {{ incidents|length }}</li>
+        <li><strong>Open Issues:</strong> {{ open_issues }}</li>
+        <li><strong>Most Reported Trail:</strong> {{ most_reported_trail }}</li>
+        <li><strong>Top Issue Type:</strong> {{ top_category }}</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Baltimore County Parks &bull; Staff Access Only</p>
+  </footer>
+
+  <script>
+    function toggleDetails(element) {
+      const details = element.nextElementSibling;
+      details.style.display = details.style.display === 'block' ? 'none' : 'block';
+    }
+  </script>
+</body>
 </html>
