@@ -1,5 +1,6 @@
 from flask import Flask, render_template, url_for, request, redirect, flash, session
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.utils import secure_filename
 import mysql.connector
 from datetime import datetime
 import os
@@ -9,10 +10,15 @@ db_user = os.environ.get('DATABASE_USER')
 db_password = os.environ.get('DATABASE_PASSWORD')
 db_name = os.environ.get('DATABASE_NAME')
 
+#UPLOAD_FOLDER = f'/static/uploads/'
+#ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecret'
 app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{db_user}:{db_password}@{db_host}/{db_name}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+#app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 db = SQLAlchemy(app)
 
