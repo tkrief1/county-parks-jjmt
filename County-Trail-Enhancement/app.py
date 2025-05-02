@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, redirect, flash, session
+from flask import Flask, render_template, url_for, request, redirect, flash, session, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 import mysql.connector
@@ -20,7 +20,7 @@ app.config['SECRET_KEY'] = 'supersecret'
 app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{db_user}:{db_password}@{db_host}/{db_name}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # 16MB limit
 
 # Ensure the upload directory exists
@@ -73,7 +73,7 @@ def submit_report():
             filename = f"{uuid.uuid4().hex}.{ext}"
             photo_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             photo.save(photo_path)
-            photo_url = f"{app.config['UPLOAD_FOLDER']}/{filename}"
+            photo_url = url_for('uploaded_file', filename=filename)
 
         new_report = Incident(
             ParkName=park,
@@ -96,6 +96,11 @@ def submit_report():
         return redirect(url_for('home'))
 
     return redirect(url_for('home'))
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
 
 @app.route('/dashboard')
 def staff_dashboard():
