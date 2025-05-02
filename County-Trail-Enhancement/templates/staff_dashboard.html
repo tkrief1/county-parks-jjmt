@@ -22,6 +22,26 @@
       font-size: 1.15rem;
       color: #2F5233;
       margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .expand-label {
+      font-size: 0.9rem;
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .expand-icon {
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+
+    .report-summary.open .expand-icon {
+      transform: rotate(90deg);
     }
 
     .report-details {
@@ -99,7 +119,10 @@
         {% for incident in incidents %}
         <div class="report">
           <div class="report-summary" onclick="toggleDetails(this)">
-            {{ incident.ParkName|title }} – {{ incident.TrailName }}
+            <span>{{ incident.ParkName|title }} – {{ incident.TrailName }}</span>
+            <span class="expand-label">
+              <span class="expand-icon">&#9654;</span> Click to expand
+            </span>
           </div>
           <div class="report-details">
             <div class="report-info">
@@ -156,8 +179,11 @@
 
   <script>
     function toggleDetails(element) {
+      const icon = element.querySelector('.expand-icon');
       const details = element.nextElementSibling;
-      details.style.display = details.style.display === 'block' ? 'none' : 'block';
+      const isOpen = details.style.display === 'block';
+      details.style.display = isOpen ? 'none' : 'block';
+      element.classList.toggle('open', !isOpen);
     }
   </script>
 </body>
