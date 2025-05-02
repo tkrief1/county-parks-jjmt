@@ -52,18 +52,25 @@ Make sure Docker is installed:
 ## ✅ Project Structure
 
 ```
+
 County-Trail-Enhancement/
 ├── app.py
 ├── Dockerfile
 ├── docker-compose.yml
 ├── requirements.txt
-├── templates/
-│   ├── home.html
-│   ├── admin.html
-│   └── staff_dashboard.html
-├── static/
-│   └── style.css
-└── README.md
+├── README.md                      
+│
+├── uploads/                       
+│   └── <image files>              
+│
+├── static/                        
+│   └── style.css                  
+│
+└── templates/                     
+    ├── home.html                  
+    ├── admin.html                 
+    └── staff_dashboard.html       
+
 ```
 
 ---
