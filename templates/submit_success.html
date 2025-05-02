@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Submission Successful - County Trails</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <header>
+    <h1>County Trails Enhancement</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/submit">Submit Another Report</a></li>
+        <li><a href="/reports">View All Reports</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="success-message">
+      <h2>🎉 Thank You for Your Submission!</h2>
+      <p>Your report for the <strong>{{ trail }}</strong> trail at <strong>{{ park }}</strong> was successfully submitted.</p>
+      
+      <div class="buttons-container">
+        <a href="/submit" class="button">Submit Another Report</a>
+        <a href="/reports" class="button">View All Reports</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Baltimore County Parks. All rights reserved.</p>
+  </footer>
+</body>
+</html>

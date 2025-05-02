@@ -19,9 +19,15 @@
     </header>
 
     <main>
+<div class="alert-box">
+      <p>This form is not a substitute for emergency services. <strong>If you are in need of emergency services, please contact 911.</strong></p>
+      <hr />
+      <p>While submitting this report, please be aware of your surroundings. <strong>Ensure you are in a safe location before submitting your report.</strong></p>
+</div>
       <!-- Submit Report Section -->
       <section id="submit">
         <h2>Submit a Trail Report</h2>
+
         <form
           action="/submit_report"
           method="POST"
@@ -30,22 +36,30 @@
           <label for="park">Select Park:</label>
           <select id="park" name="park" required>
             <option value="">--Choose a Park--</option>
-            <option value="oregon">Oregon Ridge</option>
-            <option value="cromwell">Cromwell Valley</option>
-            <option value="marshy">Marshy Point</option>
-            <option value="roland">Lake Roland</option>
-            <option value="banneker">Benjamin Banneker</option>
+            <option value="Oregon-Ridge">Oregon Ridge</option>
+            <option value="Cromwell">Cromwell Valley</option>
+            <option value="Marshy">Marshy Point</option>
+            <option value="Lake-Roland">Lake Roland</option>
+            <option value="Banneker">Benjamin Banneker</option>
           </select>
 
           <label for="trail">Trail Name:</label>
-          <input type="text" id="trail" name="trail" required />
+	  <select id="trail" name="trail" required>
+          <option value="">--Select a Trail--</option>
+	  </select>
+
+    <label for="submiter">Your Name:</label>
+    <input type="text" id="submiter" name="submiter" required />
+      
+
+    <label for="contact">Contact Info:</label>
+    <input type="text" id="contact" name="contact" required />
 
           <label for="category">Category:</label>
           <select id="category" name="category">
             <option value="erosion">Erosion</option>
             <option value="obstruction">Obstruction</option>
             <option value="wildlife">Wildlife</option>
-			<option value="wildlife">Plantlife</option>
             <option value="other">Other</option>
           </select>
 
@@ -65,27 +79,25 @@
       </section>
 
       <!-- View Reports Section -->
-      <section id="view">
-        <h2>Recent Trail Reports</h2>
-        <div id="report-list">
-          <!-- Dynamically populated via JavaScript or server-side rendering -->
-          <article class="report">
-            <h3>Trail A – Obstruction</h3>
-            <p>Reported: April 12, 2025</p>
-            <p>Status: Open</p>
-            <p>Description: Large fallen tree near mile 2.3</p>
-          </article>
+    <section id="view">
+  <h2>Recent Trail Reports</h2>
+  <div id="report-list">
+    {% if incidents %}
+      {% for incident in incidents %}
+      <article class="report">
+        <h3>{{ incident.ParkName }} – {{ incident.TrailName }}</h3>
+        <p>Category: {{ incident.Category }}</p>
+        <p>Date Reported: {{ incident.Date }}</p>
+        <p>Description: {{ incident.Description }}</p>
+      </article>
+      {% endfor %}
+    {% else %}
+      <p>No recent reports found.</p>
+    {% endif %}
+  </div>
+</section>
 
-          <article class="report">
-            <h3>Trail B – Erosion</h3>
-            <p>Reported: April 10, 2025</p>
-            <p>Status: In Progress</p>
-            <p>Description: Washed-out section making the trail dangerous.</p>
-          </article>
-        </div>
-      </section>
-
-      <!-- About Section -->
+    <!-- About Section -->
       <section id="about">
         <h2>About This Project</h2>
         <p>
@@ -102,5 +114,39 @@
     <footer>
       <p>&copy; 2025 Baltimore County Parks. All rights reserved.</p>
     </footer>
+	 <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log("Script is loaded and running ✅");
+    
+        const trailsByPark = {
+          "Oregon-Ridge": ["Baltimore Gneiss Trail", "Lake Trail", "Laurel Trail", "Lock Raven Schist Trail", "Loggers Trail", "Marble Quary Trail", "Miners Trail", "Ridge Trail", "S. James Campbell and Ivy Hill Trail", "Short Cut", "Virginia Pine"],
+          "Cromwell": ["Barrans-Baldwin Trail", "Lime Kiln Trail", "Loch Raven Drive Trail", "Meadow Trail", "Minebank Run Trail", "Sherwood Farm Trail", "Wellington Woods Trail", "Willow Grove Trail", "Birders Path", "Chat Path", "Eck Path", "Greenhouse Path", "Sycamore Path"],
+          "Marshy": ["Dundee-Saltpeter Trail", "Weiskittel Trail", "Katie and Wil’s Trail", "White Tail Trail", "Cassandor Hamilton Trail", "Greenway Trail", "Vernal Pond Trail", "Brinkmans Trail", "Bluebird Loop Trail", "Skunk Cabbage Loop Trail"],
+          "Lake-Roland": ["Red Trail", "Blue Trail", "Purple Trail", "Paved Loop Path", "Boardwalk to Lightrail", "Yellow Trail", "Orange Trail", "Green Trail", "White Trail", "Kingfisher Wetland Trail", "Pink Trail"],
+          "Banneker": ["Number 9 Trolley Line Trail", "Story Trail", "Yellow Trail", "White Trail", "Green Trail", "Red Trail", "Blue Trail"]
+        };
+    
+        const parkSelect = document.getElementById("park");
+        const trailSelect = document.getElementById("trail");
+    
+        if (!parkSelect || !trailSelect) {
+          console.log("❌ One or both dropdowns not found");
+          return;
+        }
+    
+        parkSelect.addEventListener("change", () => {
+          const selectedPark = parkSelect.value;
+          const trails = trailsByPark[selectedPark] || [];
+    
+          trailSelect.innerHTML = '<option value="">--Select a Trail--</option>';
+          trails.forEach(trail => {
+            const option = document.createElement("option");
+            option.value = trail;
+            option.textContent = trail;
+            trailSelect.appendChild(option);
+          });
+        });
+      });
+    </script> 
   </body>
 </html>

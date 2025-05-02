@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, jsonify
 import mysql.connector
+from datetime import datetime
 
-# Initialize the Flask app
 app = Flask(__name__)
 
-# Connect to MySQL database
+# Connect to MySQL
 try:
     db = mysql.connector.connect(
         host="localhost",
@@ -14,10 +14,6 @@ try:
     )
     print("Connection successful!")
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM trail_reports;")
-    result = cursor.fetchall()
-    for row in result:
-        print(row)
 except mysql.connector.Error as err:
     print(f"Error: {err}")
 
@@ -26,28 +22,33 @@ except mysql.connector.Error as err:
 def home():
     return render_template('home.html')
 
-# API: Submit new trail report
-@app.route('/submit', methods=['POST'])
+# 📌 Updated route to match form submission
+@app.route('/submit_report', methods=['POST'])
 def submit_report():
-    data = request.get_json()
-    park = data['park']
-    trail = data['trail']
-    category = data['category']
-    submitername = data['submitername']
-    description = data['description']
+    park = request.form.get('park')
+    trail = request.form.get('trail')
+    category = request.form.get('category')
+    description = request.form.get('description')
+    photo = request.files.get('photo')  # Optional: not used here
+    submitername = "Anonymous"  # ← Add a form field later if needed
 
-    query = "INSERT INTO trail_reports (park, trail, category, submitername, description) VALUES (%s, %s, %s, %s, %s)"
-    cursor.execute(query, (park, trail, category, submitername, description))
+    # Insert into database
+    query = """
+        INSERT INTO trail_reports (park, trail, category, submitername, description, Date)
+        VALUES (%s, %s, %s, %s, %s, %s)
+    """
+    cursor.execute(query, (park, trail, category, submitername, description, datetime.now()))
     db.commit()
-    return jsonify({'message': 'Report submitted successfully'})
 
-# API: Get all trail reports
+    # Show success page
+    return render_template('submit_success.html', park=park, trail=trail)
+
+# Optional: return JSON for all reports
 @app.route('/reports', methods=['GET'])
 def get_reports():
     cursor.execute("SELECT * FROM trail_reports")
     reports = cursor.fetchall()
     return jsonify(reports)
 
-# Run the app
 if __name__ == '__main__':
     app.run(debug=True)
