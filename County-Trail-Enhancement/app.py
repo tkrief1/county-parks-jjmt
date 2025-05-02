@@ -10,15 +10,20 @@ db_user = os.environ.get('DATABASE_USER')
 db_password = os.environ.get('DATABASE_PASSWORD')
 db_name = os.environ.get('DATABASE_NAME')
 
-#UPLOAD_FOLDER = f'/static/uploads/'
-#ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+UPLOAD_FOLDER = '/static/uploads/'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecret'
+
 app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{db_user}:{db_password}@{db_host}/{db_name}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-#app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # 16MB limit
+
+# Ensure the upload directory exists
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 db = SQLAlchemy(app)
 
@@ -60,14 +65,14 @@ def submit_report():
         priority = request.form.get('priority', 'Medium')
 
         # Handle optional file upload
-        photo = request.files['photo']
-        if photo and photo.filename != '':
-            filename = secure_filename(photo.filename)
-            photo_path = os.path.join('static/uploads', filename)
+        photo = request.files.get['photo']
+        photo_url = ''
+        if photo and photo.filename != '': # and allowed_file(photo.filename):
+            ext = photo.filename.rsplit('.', 1)[1].lower()
+            filename = f"{uuid.uuid4().hex}.{ext}"
+            photo_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             photo.save(photo_path)
-            photo_url = f'/static/uploads/{filename}'
-        else:
-            photo_url = ''
+            photo_url = f"{app.config['UPLOAD_FOLDER']}/{filename}"
 
         new_report = Incident(
             ParkName=park,
@@ -94,6 +99,13 @@ def submit_report():
 @app.route('/dashboard')
 def staff_dashboard():
     incidents = Incident.query.order_by(Incident.Date.desc()).all()
+    # Check if each incident's photo file actually exists
+    for incident in incidents:
+        if incident.PhotoURL:
+            full_path = os.path.join(app.root_path, incident.PhotoURL.lstrip('/'))  # Converts relative to absolute path
+            if not os.path.exists(full_path):
+                incident.PhotoURL = None
+    
     return render_template('staff_dashboard.html', incidents=incidents)
 
 @app.route('/admin')
