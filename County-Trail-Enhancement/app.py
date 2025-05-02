@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 import mysql.connector
 from datetime import datetime
+import uuid
 import os
 
 db_host = os.environ.get('DATABASE_HOST', 'localhost')
