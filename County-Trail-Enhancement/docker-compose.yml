@@ -30,8 +30,8 @@ services:
       - DATABASE_NAME=county_parks
     depends_on:
       - parks-db
-    volumns:
-      - ./static/uploads:/app/static/uploads
+    volumes:
+      - ./uploads:/app/uploads
     networks:
       - park_network
 
