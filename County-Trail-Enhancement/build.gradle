@@ -1,0 +1,17 @@
+// Root-level build.gradle
+buildscript {
+    repositories {
+        google()  // Required for Android dependencies
+        mavenCentral()  // General repository
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.4.1'  // Android Gradle Plugin
+    }
+}
+
+allprojects {
+    repositories {
+        google()  // Required for Android dependencies
+        mavenCentral()  // General repository
+    }
+}

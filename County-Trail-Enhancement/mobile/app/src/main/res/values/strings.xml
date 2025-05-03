@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">County Trails</string>
+    <string name="view_trails">View Trails</string>
+    <string name="trail_details">Trail Details</string>
+    <string name="welcome_message">Welcome to County Trails!</string>
+</resources>
